@@ -1,14 +1,17 @@
 <article class="card">
-  <h2 class="title">{{ title() }}</h2>
-  @if (participant().isSubmitted) {
-    <span class="chip submitted">Submitted</span>
-  } @else {
-    <span class="chip pending">Still choosing</span>
-  }
+  <header class="card-header">
+    <h2 class="title">{{ title() }}</h2>
+    @if (participant().isSubmitted) {
+      <span class="chip submitted">Submitted</span>
+    } @else {
+      <span class="chip pending">Still choosing</span>
+    }
+  </header>
   @if (participant().items.length) {
     <ul class="items">
       @for (item of participant().items; track item.dish.id) {
         <li class="item">
+          <span class="trash" aria-hidden="true"></span>
           @if (item.dish.imageUrl) {
             <img
               class="avatar"

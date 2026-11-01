@@ -1,0 +1,64 @@
+@use 'app/shared/styles/abstracts/colors' as color;
+
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 24px 16px;
+  background: color.$neutral-100;
+}
+
+.page {
+  width: min(640px, 100%);
+  margin: 0 auto;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 14px 0;
+  padding: 12px 0;
+  border-top: 1px solid color.$neutral-100;
+  border-bottom: 1px solid color.$neutral-100;
+  font-size: 13px;
+  color: color.$neutral-600;
+}
+.meta__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+.meta img {
+  width: 16px;
+  height: 16px;
+}
+
+.participants {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+
+.grand-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 14px 22px 0;
+  border-top: 1px solid color.$neutral-100;
+  font-size: 18px;
+  font-weight: 600;
+}
+.grand-total__amount {
+  color: color.$green-600;
+}

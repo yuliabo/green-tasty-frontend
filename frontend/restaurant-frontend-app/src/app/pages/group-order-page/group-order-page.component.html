@@ -1,9 +1,29 @@
 <main class="page">
   <h1>Group Pre-Order</h1>
-
+  <header class="meta">
+    <p class="meta__item">
+      <img src="assets/svg/address.svg" alt="" /> {{ invite().LocationAddress }}
+    </p>
+    <p class="meta__item">
+      <img src="assets/svg/calendar-green.svg" alt="" />
+      {{ invite().StartTime | date: 'mediumDate' }}
+    </p>
+    <p class="meta__item">
+      <img src="assets/svg/clock-green.svg" alt="" /> {{ invite().StartTime | date: 'shortTime' }} –
+      {{ invite().EndTime | date: 'shortTime' }}
+    </p>
+    <p class="meta__item">
+      <img src="assets/svg/people-green.svg" alt="" /> {{ participants().length }} of
+      {{ invite().MaxGuestCount }} guests
+    </p>
+  </header>
   <ul class="participants">
     @for (person of participants(); track person.id) {
       <li><app-participant-card [participant]="person" /></li>
     }
   </ul>
+  <footer class="grand-total">
+    <span class="grand-total__label">Grand Total</span>
+    <span class="grand-total__amount">{{ total() | currency }}</span>
+  </footer>
 </main>
