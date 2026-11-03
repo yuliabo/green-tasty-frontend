@@ -14,10 +14,31 @@
   padding: 20px;
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 h1 {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color.$neutral-200;
+  color: color.$neutral-600;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge--sent {
+  background: color.$orange-100;
+  color: color.$orange-600;
 }
 
 .meta {
@@ -42,12 +63,65 @@ h1 {
   height: 16px;
 }
 
+.warning {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  background: color.$bg-yellow;
+  border-radius: 10px;
+  color: color.$neutral-900;
+  font-size: 13px;
+  line-height: 1.4;
+
+  img {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    margin-top: 2px;
+  }
+}
+
 .participants {
   margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
   gap: 14px;
+}
+
+.consolidated {
+  margin: 14px 0;
+  padding: 14px 16px;
+  background: color.$neutral-0;
+  border: 1px solid color.$neutral-100;
+  border-radius: 12px;
+}
+
+.consolidated__title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color.$neutral-400;
+}
+
+.dishes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+
+  li {
+    margin: 0;
+    font-size: 15px;
+    color: color.$neutral-900;
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 .grand-total {
@@ -61,4 +135,23 @@ h1 {
 }
 .grand-total__amount {
   color: color.$green-600;
+}
+
+.submit {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: color.$green-600;
+  color: color.$neutral-0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: color.$neutral-200;
+    color: color.$neutral-400;
+    cursor: not-allowed;
+  }
 }
