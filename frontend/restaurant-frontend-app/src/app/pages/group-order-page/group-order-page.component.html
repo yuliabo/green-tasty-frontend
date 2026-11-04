@@ -56,7 +56,12 @@
       <ul class="participants">
         @for (person of participants(); track person.id) {
           <li>
-            <app-participant-card [participant]="person" [isMe]="person.id === owner()" />
+            <app-participant-card
+              [participant]="person"
+              [isMe]="person.id === owner()"
+              [canRemove]="canRemove(person)"
+              (removeClick)="openRemove($event)"
+            />
           </li>
         }
       </ul>
@@ -104,6 +109,30 @@
         (click)="onSubmit()"
       >
         {{ submitting() ? 'Submitting…' : 'Submit' }}
+      </button>
+    </app-modal>
+  }
+  @if (removeTarget()) {
+    <app-modal title="Remove guest" (closed)="removeTarget.set(null)">
+      <p class="dialog-text">
+        Are you sure you want to remove <strong>{{ removeTarget()?.name }}</strong> and their
+        pre-order from this reservation? This action cannot be undone.
+      </p>
+      <button
+        modal-actions
+        type="button"
+        class="dialog-btn dialog-btn--ghost"
+        (click)="removeTarget.set(null)"
+      >
+        Cancel
+      </button>
+      <button
+        modal-actions
+        type="button"
+        class="dialog-btn dialog-btn--danger"
+        (click)="confirmRemove()"
+      >
+        Remove Guest
       </button>
     </app-modal>
   }

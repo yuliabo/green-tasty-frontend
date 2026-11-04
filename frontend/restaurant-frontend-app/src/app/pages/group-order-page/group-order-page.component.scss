@@ -208,6 +208,7 @@ h1 {
   background: color.$neutral-0;
   color: color.$neutral-600;
 }
+
 .dialog-btn--primary {
   background: color.$green-600;
   color: color.$neutral-0;
@@ -217,4 +218,9 @@ h1 {
     color: color.$neutral-400;
     cursor: not-allowed;
   }
+}
+
+.dialog-btn--danger {
+  background: color.$red-400;
+  color: color.$neutral-0;
 }

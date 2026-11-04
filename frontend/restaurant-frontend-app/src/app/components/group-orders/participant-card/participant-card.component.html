@@ -6,6 +6,16 @@
     } @else {
       <span class="chip pending">Still choosing</span>
     }
+    @if (canRemove()) {
+      <button
+        type="button"
+        class="remove"
+        [attr.aria-label]="'Remove ' + participant().name"
+        (click)="removeClick.emit(participant())"
+      >
+        Remove Guest
+      </button>
+    }
   </header>
   @if (participant().items.length) {
     <ul class="items">

@@ -50,6 +50,13 @@ export class GroupOrdersService {
     return this.http.post<SubmittedDish[]>(`${this.baseUrl}/group-reservations/${groupReservationId}/submit`, { reservationId })
   }
 
+  removeSession$(groupReservationId: string, guestSessionId:
+    string): Observable<GroupSessionsResponse> {
+    return this.http.delete<GroupSessionsResponse>(`${this.baseUrl}/guest/groups/${groupReservationId}/sessions/${guestSessionId}`,
+      { headers: this.ownerHeaders() },
+    );
+  }
+
 
   private ownerHeaders(): HttpHeaders {
     const tokens = this.authenticationService.getTokens();

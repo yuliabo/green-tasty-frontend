@@ -12,6 +12,7 @@ import { exhaustMap, forkJoin, Subscription, switchMap, timer } from 'rxjs';
 import { GroupStatusResponse } from '@app/models/group-orders/group-status.model';
 import { ModalComponent } from '@app/shared/custom-components/modal/modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Participant } from '@app/models/group-orders/participant.model';
 
 const SYNC_MS = 15_000;
 
@@ -94,6 +95,8 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
 
   readonly hasDishes = computed(() => this.participants().some(p => p.items.length > 0));
 
+  readonly removeTarget = signal<Participant | null>(null);
+
   openDialog() {
     this.dialogOpen.set(true);
   }
@@ -126,6 +129,29 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
       },
       error: () => this.refreshError.set(true),
     })
+  }
+
+  openRemove(person: Participant) {
+    this.removeTarget.set(person);
+  }
+
+  confirmRemove() {
+    const person = this.removeTarget();
+    if (!person) return;
+    this.subscriptions.add(
+      this.groupOrdersService.removeSession$(this.
+        groupReservationId(), person.id).subscribe({
+
+          next: response => {
+            this.sessions.set(response); this.
+              removeTarget.set(null);
+          },
+          error: () => { this.removeTarget.set(null); },
+        }));
+  }
+
+  canRemove(person: Participant): boolean {
+    return person.type === 'Guest' && !this.sentOut();
   }
 
   private refreshData$ = () =>
