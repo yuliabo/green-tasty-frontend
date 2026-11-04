@@ -4,6 +4,17 @@
   </p>
   <button type="button" class="retry" (click)="load()">Try again</button>
 } @else {
+  <div class="sync-bar">
+    @if (updatedAt()) {
+      <span>Updated at {{ updatedAt() | date: 'HH:mm:ss' }}</span>
+    }
+    <button type="button" class="sync-bar__refresh" (click)="syncNow()">Refresh</button>
+    @if (refreshError()) {
+      <p class="sync-bar__error">
+        Couldn't refresh. Showing data from {{ updatedAt() | date: 'HH:mm:ss' }}.
+      </p>
+    }
+  </div>
   <main class="page">
     <div class="title-row">
       <h1>Group Pre-Order</h1>
@@ -76,9 +87,22 @@
   </main>
   @if (dialogOpen()) {
     <app-modal title="Confirm your order" (closed)="dialogOpen.set(false)">
-      <p>Send this pre-order to the restaurant?</p>
-      <button type="button" (click)="dialogOpen.set(false)">Cancel</button>
-      <button type="button" [disabled]="submitting()" (click)="onSubmit()">
+      <p class="dialog-text">Send this pre-order to the restaurant?</p>
+      <button
+        modal-actions
+        type="button"
+        class="dialog-btn dialog-btn--ghost"
+        (click)="dialogOpen.set(false)"
+      >
+        Cancel
+      </button>
+      <button
+        modal-actions
+        type="button"
+        class="dialog-btn dialog-btn--primary"
+        [disabled]="submitting()"
+        (click)="onSubmit()"
+      >
         {{ submitting() ? 'Submitting…' : 'Submit' }}
       </button>
     </app-modal>

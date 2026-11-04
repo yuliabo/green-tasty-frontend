@@ -7,6 +7,38 @@
   background: color.$neutral-100;
 }
 
+.sync-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: color.$neutral-400;
+}
+
+.sync-bar__refresh {
+  padding: 4px 12px;
+  border: 1px solid color.$neutral-200;
+  border-radius: 999px;
+  background: color.$neutral-0;
+  color: color.$neutral-600;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    border-color: color.$green-600;
+    color: color.$green-600;
+  }
+}
+
+.sync-bar__error {
+  margin: 0;
+  color: color.$red-400;
+  font-weight: 600;
+}
+
 .page {
   width: min(640px, 100%);
   margin: 0 auto;
@@ -151,6 +183,37 @@ h1 {
 
   &:disabled {
     background-color: color.$neutral-200;
+    color: color.$neutral-400;
+    cursor: not-allowed;
+  }
+}
+
+.dialog-text {
+  margin: 0;
+  font-size: 15px;
+  color: color.$neutral-600;
+}
+
+.dialog-btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dialog-btn--ghost {
+  border: 1px solid color.$neutral-200;
+  background: color.$neutral-0;
+  color: color.$neutral-600;
+}
+.dialog-btn--primary {
+  background: color.$green-600;
+  color: color.$neutral-0;
+
+  &:disabled {
+    background: color.$neutral-200;
     color: color.$neutral-400;
     cursor: not-allowed;
   }

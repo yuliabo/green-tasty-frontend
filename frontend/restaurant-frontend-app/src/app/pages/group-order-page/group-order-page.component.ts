@@ -8,10 +8,12 @@ import { GroupOrdersService } from '@app/services/group-orders/group-orders.serv
 import { GuestInvite } from '@app/models/reservations/guest-invite.model';
 import { GroupSessionsResponse } from '@app/models/group-orders/group-sessions-response.model';
 import { consolidatePreOrder } from '@app/shared/helpers/consolidate-pre-order';
-import { forkJoin, Subscription, switchMap } from 'rxjs';
+import { exhaustMap, forkJoin, Subscription, switchMap, timer } from 'rxjs';
 import { GroupStatusResponse } from '@app/models/group-orders/group-status.model';
 import { ModalComponent } from '@app/shared/custom-components/modal/modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
+
+const SYNC_MS = 15_000;
 
 @Component({
   selector: 'app-group-order-page',
@@ -21,6 +23,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class GroupOrderPageComponent implements OnInit, OnDestroy {
+
   private readonly route = inject(ActivatedRoute);
   private readonly groupOrdersService = inject(GroupOrdersService);
 
@@ -36,8 +39,12 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
   readonly groupReservationId = signal('');
   readonly loading = signal(false);
   readonly errorStatus = signal<number | null>(null);
-
+  readonly updatedAt = signal<Date | null>(null);
+  readonly refreshError = signal(false);
+  private syncSub: Subscription | null = null;
   private readonly subscriptions = new Subscription();
+
+
 
   ngOnInit() {
     this.load();
@@ -64,6 +71,8 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
           this.status.set(response.status);
           this.owner.set(response.owner);
           this.loading.set(false);
+          this.updatedAt.set(new Date());
+          this.startSync();
         },
         error: (err: HttpErrorResponse) => {
           this.errorStatus.set(err.status ?? 0);
@@ -100,11 +109,56 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
           this.sent.set(true);
           this.submitting.set(false);
           this.dialogOpen.set(false);
+          this.stopSync();
         },
-        error: () => this.submitting.set(false)
+        error: () => this.submitting.set(false),
       }))
   }
 
+  syncNow() {
+    this.refreshData$().subscribe({
+      next: response => {
+        this.sessions.set(response.sessions);
+        this.status.set(response.status);
+        this.updatedAt.set(new Date());
+        this.refreshError.set(false);
+        if (response.status.status !== 'Open') this.stopSync();
+      },
+      error: () => this.refreshError.set(true),
+    })
+  }
+
+  private refreshData$ = () =>
+    forkJoin({
+      sessions: this.groupOrdersService.getSessions$(this.
+        groupReservationId(), { silent: true }),
+      status: this.groupOrdersService.getStatus$(this.groupReservationId(), { silent: true }),
+    });
+
+  private startSync() {
+    if (this.syncSub && !this.syncSub.closed) return;
+    if (this.sent() || this.status()?.status !== 'Open') return;
+
+    this.syncSub = timer(SYNC_MS, SYNC_MS).pipe(
+      exhaustMap(() => this.refreshData$()),
+    ).subscribe({
+      next: response => {
+        this.sessions.set(response.sessions);
+        this.status.set(response.status);
+        this.updatedAt.set(new Date());
+        this.refreshError.set(false);
+        if (response.status.status !== 'Open') this.stopSync();
+      },
+      error: () => this.refreshError.set(true),
+    })
+
+    this.subscriptions.add(this.syncSub);
+  }
+
+  private stopSync() {
+    this.syncSub?.unsubscribe();
+    this.syncSub = null;
+  }
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
